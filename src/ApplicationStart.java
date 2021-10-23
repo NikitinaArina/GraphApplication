@@ -3,9 +3,9 @@ import service.GraphServiceImpl;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Scanner;
 
 public class ApplicationStart {
@@ -123,9 +123,12 @@ public class ApplicationStart {
                     graphService.getWeight(id, id2);
                     break;
                 case 14:
-                    report();
+                    List<List<Integer>> threeSubgraphsGraph = graphService.getThreeSubgraphsGraph();
+                    System.out.println(report());
                     graphService.toMatrix(null, false);
-                    System.out.println(graphService.getThreeSubgraphsGraph());
+                    System.out.println("Количество трехвершиных подграфов графа: " + threeSubgraphsGraph.get(threeSubgraphsGraph.size() - 1));
+                    threeSubgraphsGraph.remove(threeSubgraphsGraph.size() - 1);
+                    System.out.println(threeSubgraphsGraph);
                     break;
                 case 15:
                     flag = false;
@@ -187,9 +190,9 @@ public class ApplicationStart {
         StringBuilder stringBuilder = new StringBuilder();
         LocalDateTime time = LocalDateTime.now();
         stringBuilder
-                .append("Результаты работы алгоритма «Вывести все трехвершинные полные подграфы графа.»")
-                .append("Студент: Никитина Арина Сергеевна")
-                .append("Группа: Б-ПИНФ-31")
+                .append("Результаты работы алгоритма «Вывести все трехвершинные полные подграфы графа.»\n")
+                .append("Студент: Никитина Арина Сергеевна\n")
+                .append("Группа: Б-ПИНФ-31\n")
                 .append("Дата: " + time.format(DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm")));
         return String.valueOf(stringBuilder);
     }

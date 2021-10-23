@@ -117,22 +117,7 @@ public class GraphServiceImpl implements GraphService {
 
         Files.write(path, Collections.singleton(getCountVertices().toString()), StandardCharsets.UTF_8);
 
-        String[][] matrix = new String[getCountVertices()][getCountVertices()];
-
-        for (Edge edge : graph.getEdges()) {
-            matrix[edge.getVertices1().getId() - 1][edge.getVertices2().getId() - 1] = String.valueOf(edge.getWeight());
-        }
-
-        for (int i = 0; i < matrix.length; i++) {
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int j = 0; j < matrix.length; j++) {
-                if (matrix[i][j] == null) {
-                    matrix[i][j] = "0";
-                }
-                stringBuilder.append(String.format("%-10s", matrix[i][j]));
-            }
-            Files.write(path, List.of(stringBuilder.toString()), StandardCharsets.UTF_8, StandardOpenOption.APPEND);
-        }
+        toMatrix(path, true);
     }
 
     @Override
@@ -250,10 +235,10 @@ public class GraphServiceImpl implements GraphService {
 
         for (Edge edge : edges) {
             if (edge.getVertices1().equals(vertex) && edge.getVertices2().equals(vertex2)) {
-                logger.info("The vertices (%s) and (%s) are adjacency");
+                logger.info(String.format("The vertices (%s) and (%s) are adjacency", id, id2));
                 return true;
             } else if (edge.getVertices2().equals(vertex) && edge.getVertices1().equals(vertex2)) {
-                logger.info("The vertices (%s) and (%s) are adjacency");
+                logger.info(String.format("The vertices (%s) and (%s) are adjacency", id, id2));
                 return true;
             }
         }
@@ -297,13 +282,50 @@ public class GraphServiceImpl implements GraphService {
 
         if (exists) {
             return Files.readAllLines(path);
-        } else throw new FileNotFoundException();
+        } else throw new FileNotFoundException(String.format("File %s is not found ", path.getFileName()));
+    }
+
+    public void toMatrix(Path path, boolean flag) throws IOException {
+        String[][] matrix = new String[getCountVertices()][getCountVertices()];
+
+        for (Edge edge : graph.getEdges()) {
+            matrix[edge.getVertices1().getId() - 1][edge.getVertices2().getId() - 1] = String.valueOf(edge.getWeight());
+        }
+
+        for (int i = 0; i < matrix.length; i++) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int j = 0; j < matrix.length; j++) {
+                if (matrix[i][j] == null) {
+                    matrix[i][j] = "0";
+                }
+                stringBuilder.append(String.format("%-10s", matrix[i][j]));
+            }
+            if (flag)
+                Files.write(path, List.of(stringBuilder.toString()), StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+        }
     }
 
     /*
-    * Вывести все трехвершинные полные подграфы графа.
-    * То есть, если три вершины 1,5,8 образуют полный подграф, тройку <1,5,8>
-    * */
+     * Вывести все трехвершинные полные подграфы графа.
+     * То есть, если три вершины 1,5,8 образуют полный подграф, тройку <1,5,8>
+     * */
+
+    public List<List<Integer>> getThreeSubgraphsGraph() {
+        int count = 0;
+        List<List<Integer>> list = new ArrayList<>();
+        for (int i = 1; i < getCountVertices(); i++) {
+            for (int j = i + 1; j < getCountVertices(); j++) {
+                for (int k = j + 1; k <= getCountVertices(); k++) {
+                    if (isAdjacency(i, j) && isAdjacency(j, k) && isAdjacency(i, k)) {
+                        list.add(Arrays.asList(i, j, k));
+                        count++;
+                    }
+                }
+            }
+        }
+        System.out.println(String.format("Количество трехвершиных подграфов графа %s", count));
+        return list;
+    }
 
     @Override
     public String toString() {

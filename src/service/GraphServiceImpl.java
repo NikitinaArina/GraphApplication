@@ -302,6 +302,7 @@ public class GraphServiceImpl implements GraphService {
             }
             if (flag)
                 Files.write(path, List.of(stringBuilder.toString()), StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+            else System.out.println(stringBuilder);
         }
     }
 
@@ -323,7 +324,7 @@ public class GraphServiceImpl implements GraphService {
                 }
             }
         }
-        System.out.println(String.format("Количество трехвершиных подграфов графа %s", count));
+        list.add(Collections.singletonList(count));
         return list;
     }
 

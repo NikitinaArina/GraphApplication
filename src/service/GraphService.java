@@ -3,6 +3,8 @@ package service;
 import model.Graph;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
 
 public interface GraphService {
 
@@ -31,4 +33,8 @@ public interface GraphService {
     boolean isAdjacency(Integer id, Integer id2);
 
     Float getWeight(Integer id, Integer id2);
+
+    List<List<Integer>> getThreeSubgraphsGraph();
+
+    void toMatrix(Path path, boolean flag) throws IOException;
 }
